@@ -1,4 +1,4 @@
-import { PenSquare, Trash2Icon } from "lucide-react";
+import { PenSquareIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router";  
 import { formatDate } from "../lib/util";
 
@@ -24,3 +24,4 @@ const NoteCard = ({ note }) => {
          </Link>
     )
  }
+ export default NoteCard

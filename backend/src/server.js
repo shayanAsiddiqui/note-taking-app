@@ -14,13 +14,25 @@ const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
 
 // middleware
+// if (process.env.NODE_ENV !== "production") {
+//   app.use(
+//     cors({
+//       origin: "http://localhost:5173",
+//     })
+//   );
+// }
+
 if (process.env.NODE_ENV !== "production") {
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: [
+        "http://localhost:5173",
+        "https://note-taking-7oxt.vercel.app"
+      ],
     })
   );
 }
+
 app.use(express.json()); // this middleware will parse JSON bodies: req.body
 app.use(rateLimiter);
 

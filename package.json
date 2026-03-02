@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/shayanAsiddiqui/note-taking-app/issues"
   },
-  "homepage": "https://github.com/shayanAsiddiqui/note-taking-app#readme"
+  "homepage": "https://github.com/shayanAsiddiqui/note-taking-app#readme",
+  "dependencies": {
+    "@clerk/clerk-react": "^5.61.3"
+  }
 }

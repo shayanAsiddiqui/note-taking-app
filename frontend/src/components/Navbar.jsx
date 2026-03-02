@@ -13,11 +13,7 @@ export const Navbar = () => {
                     <PlusIcon className='size-5'/>
                     <span>Create Note</span>
                 </Link>
-                </div>
-                <div>
-                    <Link to="/login" className="btn btn-outline btn-sm">Login</Link>
-                    <Link to="/signup" className="btn btn-outline btn-sm ml-2">Sign Up</Link>
-                </div>
+                </div>  
             </div>
         </div>
     </header>

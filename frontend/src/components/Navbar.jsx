@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { PlusIcon } from "lucide-react"
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 
 export const Navbar = () => {
   return (
@@ -13,10 +14,19 @@ export const Navbar = () => {
                     <PlusIcon className='size-5'/>
                     <span>Create Note</span>
                 </Link>
+                
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
+                
+                <SignedOut>
+                    <SignInButton mode="modal">
+                        <button className="btn btn-primary">Sign In</button>
+                    </SignInButton>
+                </SignedOut>
                 </div>  
             </div>
         </div>
     </header>
-    
   )
 }

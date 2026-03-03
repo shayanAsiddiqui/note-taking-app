@@ -3,25 +3,20 @@ import { Link } from "react-router";
 import { formatDate } from "../lib/util";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import { useNotes } from "../hooks/useNotes";
 
-const NoteCard = ({ note,setNotes }) => {
+const NoteCard = ({ note}) => {
+
+    const {deleteNote} = useNotes()
 
     const handleDelete = async (e,id) => {
-        e.preventDefault();
-        
-        if(!window.confirm("Are you sure you want to delete this note?")){
-            return;
-        }
+        e.preventDefault()
 
-        try {
-            await api.delete(`/notes/${id}`);
-            setNotes(prev => prev.filter(note => note._id !== id));
-            toast.success("Note deleted successfully");
-        } catch (error) {
-            console.log("Error deleting note", error);
-            toast.error("Failed to delete note");
-            
+        if(!window.confirm("Are you sure you want to delete this note?")){
+            return
         }
+        deleteNote(id)
+        toast.success("Note deleted successfully")
     }
     return (
         <Link to={`/note/${note._id}`}

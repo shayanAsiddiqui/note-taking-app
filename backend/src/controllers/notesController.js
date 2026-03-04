@@ -1,33 +1,45 @@
 import Note from "../models/Note.js";
 
-export async function getAllNotes (req, res){
+export async function getAllNotes(req, res) {
     try {
-        const notes = await Note.find().sort({createdAt: -1});
+        // 🔥 Grab the ID of the person making the request
+        const userId = req.auth.userId; 
+        
+        // 🔥 Only find notes that belong to THIS user
+        const notes = await Note.find({ userId }).sort({ createdAt: -1 });
+        
         res.status(200).json(notes);
-    }catch(err){
+    } catch(err) {
         console.error("getAllNotes", err);
-        res.status(500).json({message : "Internal Server Error"});
+        res.status(500).json({ message : "Internal Server Error" });
     }
 }
-export async function createNote (req, res){
-    try{
-        const{title,content} = req.body;
-        const note = new Note({title, content})
 
+export async function createNote(req, res) {
+    try {
+        const { title, content } = req.body;
+        const userId = req.auth.userId; // 🔥 Grab the ID
 
-        const savedNote = await note.save()
+        // 🔥 Attach the ID to the note before saving
+        const note = new Note({ title, content, userId });
 
-        res.status(201).json({savedNote});
-    }catch(error){
+        const savedNote = await note.save();
+
+        res.status(201).json(savedNote);
+    } catch(error) {
         console.error("createNote", error);
-        res.status(500).json({message : "Internal Server Error"});
+        res.status(500).json({ message : "Internal Server Error" });
     }
 }
 
 export async function deleteNote(req, res) {
   try {
-    const deletedNote = await Note.findByIdAndDelete(req.params.id);
-    if (!deletedNote) return res.status(404).json({ message: "Note not found" });
+    const userId = req.auth.userId;
+    
+    // 🔥 Security check: Find by Note ID *AND* User ID
+    const deletedNote = await Note.findOneAndDelete({ _id: req.params.id, userId });
+    
+    if (!deletedNote) return res.status(404).json({ message: "Note not found or unauthorized" });
     res.status(200).json({ message: "Note deleted successfully!" });
   } catch (error) {
     console.error("Error in deleteNote controller", error);
@@ -35,31 +47,41 @@ export async function deleteNote(req, res) {
   }
 }
 
-export async function updateNote (req, res){
+export async function updateNote(req, res) {
     try {
-        const{title, content} = req.body;
-        const updatedNote = await Note.findByIdAndUpdate(req.params.id,
-            {title,content},
-            {new: true}
-        );
-        if(!updatedNote){
-            res.status(404).json({message : "Note not found"});
-        }
-        res.status(200).json({updatedNote});
-    }catch (error){
-        console.error("updateNote", error);
-        res.status(500).json({message : "Internal Server Error"});
+        const { title, content } = req.body;
+        const userId = req.auth.userId;
 
+        // 🔥 Security check: Find by Note ID *AND* User ID
+        const updatedNote = await Note.findOneAndUpdate(
+            { _id: req.params.id, userId },
+            { title, content },
+            { new: true }
+        );
+
+        if (!updatedNote) {
+            return res.status(404).json({ message : "Note not found or unauthorized" });
+        }
+        res.status(200).json(updatedNote);
+    } catch (error) {
+        console.error("updateNote", error);
+        res.status(500).json({ message : "Internal Server Error" });
     }
 }
 
-export async function getNote(req, res){
-    try{
-        const note = await note.findById(req.params.id);
-        if(!note){res.status(404).json({message:"Note not found"})}
-        res.status(200).json({note});
-    }catch(error){
+export async function getNote(req, res) {
+    try {
+        const userId = req.auth.userId;
+        
+        // 🔥 Security check: Find by Note ID *AND* User ID
+        const note = await Note.findOne({ _id: req.params.id, userId });
+        
+        if (!note) {
+            return res.status(404).json({ message: "Note not found or unauthorized" });
+        }
+        res.status(200).json(note);
+    } catch(error) {
         console.error("getNote", error);
-        res.status(500).json({message : "Internal Server Error"});
+        res.status(500).json({ message : "Internal Server Error" });
     }
 }

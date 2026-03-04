@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema({
+    userId: {            // 🔥 NEW: This is the Clerk User ID!
+        type: String,
+        required: true
+    },
     title: {
         type: String,
         required : true
@@ -9,7 +13,6 @@ const noteSchema = new mongoose.Schema({
         type : String,
         required : true
     }
-
 },{
     timestamps : true
 })
